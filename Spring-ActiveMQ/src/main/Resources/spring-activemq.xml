@@ -1,0 +1,46 @@
+<beans
+        xmlns="http://www.springframework.org/schema/beans"
+        xmlns:amq="http://activemq.apache.org/schema/core"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:p="http://www.springframework.org/schema/p"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xmlns:jms="http://www.springframework.org/schema/jms"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+         http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd
+         http://www.springframework.org/schema/context
+         http://www.springframework.org/schema/context/spring-context.xsd
+         http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-jms-3.0.xsd"
+>
+
+    <!--注解自动扫描-->
+    <context:component-scan base-package="com.landicorp" />
+
+    <!--连接到ActiveMQ-->
+    <bean id="amqConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory"
+          p:brokerURL="tcp://localhost:61616"></bean>
+
+    <!--将ActiveMQ的连接进行缓存包装，提升性能-->
+    <bean id="cachedConnectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory"
+          p:targetConnectionFactory-ref="amqConnectionFactory"
+          p:sessionCacheSize="10"></bean>
+
+    <!--ActiveMQ消息目的地 这里是点对点式-->
+    <bean id="destination" class="org.apache.activemq.command.ActiveMQQueue">
+        <!--消息队列名称-->
+        <constructor-arg value="FOO.TEST"/>
+    </bean>
+
+    <!--配置JmsTemplate实例，它使用缓存的连接和目的地 这里配置的是生产者 帮我们处理好了大部分工作-->
+    <bean id="producerTemplate" class="org.springframework.jms.core.JmsTemplate"
+          p:connectionFactory-ref="cachedConnectionFactory"
+          p:defaultDestination-ref="destination"></bean>
+
+    <!--Spring 消息监听器容器配置-->
+    <jms:listener-container
+        container-type="default"
+        connection-factory="amqConnectionFactory"
+        acknowledge="auto">
+        <jms:listener destination="FOO.TEST" ref="simpleMsgListener" method="onMessage"></jms:listener>
+    </jms:listener-container>
+</beans>
