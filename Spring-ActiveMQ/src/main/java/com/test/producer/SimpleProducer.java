@@ -1,6 +1,6 @@
-package com.landicorp.producer;
+package com.test.producer;
 
-import com.landicorp.creator.MyMessageCreator;
+import com.test.creator.MyMessageCreator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;

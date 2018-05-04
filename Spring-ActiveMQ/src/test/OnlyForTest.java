@@ -1,4 +1,4 @@
-import com.landicorp.producer.SimpleProducer;
+import com.test.producer.SimpleProducer;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;

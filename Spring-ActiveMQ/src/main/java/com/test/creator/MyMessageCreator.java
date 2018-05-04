@@ -1,4 +1,4 @@
-package com.landicorp.creator;
+package com.test.creator;
 
 import org.springframework.jms.core.MessageCreator;
 

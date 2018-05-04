@@ -1,4 +1,4 @@
-package com.landicorp.listener;
+package com.test.listener;
 
 import org.springframework.stereotype.Component;
 
